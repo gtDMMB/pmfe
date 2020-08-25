@@ -42,10 +42,12 @@ LIBS += -lboost_log
 TARGET_PLATFORM := $(shell uname -s)
 ifeq "$(TARGET_PLATFORM)" "Darwin"
 	#CXX:=g++-10
-	CXX:=/usr/local/Cellar/llvm/10.0.1/bin/clang
-	CXXFLAGS:=$(CXXFLAGS:c++11=c++14) -frounding-math
-				#-DCGAL_HEADER_ONLY -D_GLIBCXX_USE_CXX11_ABI=0
-	LIBS:=$(LIBS:-lCGAL=) -frounding-math
+	CXX:=/usr/local/Cellar/llvm/10.0.1/bin/clang++
+	CXXFLAGS:=$(CXXFLAGS:c++11=c++14) -frounding-math -DBOOST_LOG_DYN_LINK \
+				-stdlib=libc++ -DCGAL_HEADER_ONLY -D_GLIBCXX_USE_CXX11_ABI=0
+	LIBS:=$(LIBS:-lCGAL=) -frounding-math -lboost_log_setup \
+			-L/usr/local/Cellar/boost/1.73.0/lib -lc++ \
+			-lboost_log-mt
 endif
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
