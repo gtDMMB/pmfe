@@ -38,6 +38,16 @@ LIBS += -lboost_program_options
 LIBS += -lboost_system
 LIBS += -lboost_log
 
+# MacOS specific compilation (llvm compiler, and flags):
+TARGET_PLATFORM := $(shell uname -s)
+ifeq "$(TARGET_PLATFORM)" "Darwin"
+	#CXX:=g++-10
+	CXX:=/usr/local/Cellar/llvm/10.0.1/bin/clang
+	CXXFLAGS:=$(CXXFLAGS:c++11=c++14) -frounding-math
+				#-DCGAL_HEADER_ONLY -D_GLIBCXX_USE_CXX11_ABI=0
+	LIBS:=$(LIBS:-lCGAL=) -frounding-math
+endif
+
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
 all: $(OBJ) $(BIN)
 
