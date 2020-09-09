@@ -105,7 +105,6 @@ echo "eval alias cmake31=`readlink -f ./bin/cmake`" >> ~/.bashrc
 source ~/.bashrc || eval alias cmake31=`readlink -f ./bin/cmake`
 cd ..
 which cmake31
-#~/GTDMMBSoftware2020/cmake-3.18.2/bin/cmake
 ```
 
 ### 📰 Install CGAL tools -- multiprocessing library sources and headers (depends on Boost and CMake)
@@ -133,10 +132,11 @@ That should be it for a fresh compile of the Python objects we will require in `
 So we test as follows:
 ```bash
 sage9.0
-sage: TODO
+sage: from TODO import *
+sage: Run TODO
 ```
 
-## Debugging and troubleshooting
+## 🐞 Debugging and troubleshooting
 
 At this point, it takes about 45 minutes from start to finish to get the *PMFE* code up and chugging on structures. 
 If for some reason this procedure no longer works, I suggest troubleshooting along the following topics 
