@@ -27,6 +27,9 @@ CXXFLAGS += -fopenmp
 CXXFLAGS += -Wall
 CXXFLAGS += -g
 CXXFLAGS += -O3
+CXXFLAGS += -Iinclude $(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
+		-DBOOST_FILESYSTEM_NO_DEPRECATED=1 \
+		-I$(shell readlink -f ../BoostLocalInstall/include)
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
@@ -37,6 +40,7 @@ LIBS += -lboost_filesystem
 LIBS += -lboost_program_options
 LIBS += -lboost_system
 LIBS += -lboost_log
+
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
 all: $(OBJ) $(BIN)
