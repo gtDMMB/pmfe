@@ -67,35 +67,82 @@ cd ../
 
 ## 📡 Fetch and extract core external library sources
 
-### 📰 Build the interface (B2 script) for recent Boost C++ libraries
+### 📰 Build the interface for recent Boost C++ libraries
 
+The current documentation notes are [here](TODO) **TODO**. 
+In summary, we run the following commands:
+```bash
+wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2
+tar xvjf boost_1_74_0.tar.bz2
+cd boost_1_74_0
+CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) \
+      --with-libraries=program_options,regex,filesystem,system,log cxx
+# TODO
+```
+
+
+#### Old (not working instructions) -- (B2 script) -- TODO: Remove this
 ```bash
 git clone https://github.com/boostorg/build.git
 cd build
-CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh cxx
-./b2 install --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall)
+CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) --with-libraries=program_options,regex,filesystem,system,log cxx
+./b2 install 
 cd ..
 ```
 
 ### 📰 Build and install a sane local CMake toolchain
 
+The current documentation notes are [here](https://cmake.org/install/). 
+In summary, we run the following commands:
 ```bash
 wget https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2.tar.gz
 tar xvzf cmake-3.18.2.tar.gz
 cd cmake-3.18.2
 ./bootstrap
 make
-make install
+make install/local # May fail, but creates some links ... OK
+echo "eval alias cmake31=`readlink -f ./bin/cmake`" >> ~/.bashrc
+source ~/.bashrc || eval alias cmake31=`readlink -f ./bin/cmake`
+cd ..
+which cmake31
+#~/GTDMMBSoftware2020/cmake-3.18.2/bin/cmake
 ```
 
 ### 📰 Install CGAL tools -- multiprocessing library sources and headers (depends on Boost and CMake)
 
+The current documentation notes are [here](https://doc.cgal.org/latest/Manual/usage.html). 
+In summary, we run the following commands:
 ```bash
 git clone https://github.com/CGAL/cgal.git
 cd cgal && mkdir -p LocalCGALBuildDir && cd LocalCGALBuildDir
-cmake ../ -DCMAKE_BUILD_TYPE=Release
-
+cmake31 ../ -DCMAKE_BUILD_TYPE=Release
+# ... 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mschmidt34/GTDMMBSoftware2020/cgal/LocalCGALBuildDir
+cd ../..
 ```
 
+## Back to compiling and running the PMFE code sources
 
+```bash
+cd pmfe
+make
+```
+That should be it for a fresh compile of the Python objects we will require in ``sage-math``. 
+So we test as follows:
+```bash
+sage9.0
+sage: TODO
+```
 
+## Debugging and troubleshooting
+
+At this point, it takes about 45 minutes from start to finish to get the *PMFE* code up and chugging on structures. 
+If for some reason this procedure no longer works, I suggest troubleshooting along the following topics 
+(or message me and I will fix it :smile:):
+
+* Does the system wide build of ``sage9`` (or the most recent version) have dependency issues? 
+  If so, it is not difficult to download the latest sources, configure, and make them locally in the 
+  user's home directory. This process has been known to take overnight. Then, as above, export an alias to the 
+  local ``sage`` binary to run it and its local Python interpreter (or ``ipython shell``).
