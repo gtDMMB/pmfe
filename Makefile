@@ -16,20 +16,20 @@ DEP := $(SRC:.cc=.P)
 HDR := $(wildcard src/*.h)
 
 # include directories
-INCLUDES += -Iinclude
 INCLUDES += -IiB4e
 INCLUDES += -I/usr/local/include # For Homebrew
 
 # C++ compiler flags
-CXXFLAGS += --std=c++11
+CXXFLAGS += --std=c++14 -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
 CXXFLAGS += -fPIC
 CXXFLAGS += -fopenmp
 CXXFLAGS += -Wall
 CXXFLAGS += -g
 CXXFLAGS += -O3
-CXXFLAGS += -Iinclude $(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
-		-DBOOST_FILESYSTEM_NO_DEPRECATED=1 \
-		-I$(shell readlink -f ../BoostLocalInstall/include)
+CXXFLAGS += -Iinclude $(INCLUDES) $(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
+		-DBOOST_FILESYSTEM_NO_DEPRECATED \
+		-I$(shell readlink -f ../BoostLocalInstall/include) \
+		-frounding-math -DBOOST_LOG_DYN_LINK=0 -DCGAL_HEADER_ONLY
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
@@ -40,7 +40,7 @@ LIBS += -lboost_filesystem
 LIBS += -lboost_program_options
 LIBS += -lboost_system
 LIBS += -lboost_log
-
+LIBS += -frounding-math -lboost_log_setup -lboost_log-mt
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
 all: $(OBJ) $(BIN)
