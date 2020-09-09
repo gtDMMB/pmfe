@@ -12,11 +12,35 @@ maintain working versions (or installations) of the *PMFE* code, e.g., this inst
 while a little bit of extra work up front, should lead to longer term stability and 
 functionality of the work based on this code. 
 
-Let us get started with the documentation procedure below. 
+My intention with this set of documentation and installer instructions is to prevent painful
+breakage when system components on the campus math machines are upgraded (or changed) down the line. 
+I want to ensure that those users in the group following along can continue to run this modified 
+*PMFE* software for non-development computations. Morover, the best way to make sure users in a few 
+years that do need to modify these instructions can do so easily and well is to explain why we are 
+doing things this way. So bear with me as I explain things step-by-step, that it may make the next 
+code RA's life an existential breeze!
 
 **NOTE:** This documentation set is currently housed in a separate ``math-mulberry-testing`` 
 branch. To view these instructions offline, users will need to refer to the new files within 
 this branch, and compile from the modified ``Makefile`` contained therein. 
+
+*Now, let us get started with the documentation procedure below.*
+
+## Things to ask your Linux sysadmin for before we can dig in and get our terminals in the mix ...
+
+I am going to keep a short log of the system software that **IS** (very much) needed to be installed 
+systemwide to get this local install method working. Unfotunately, there is an important need to get 
+recent, sane compiler toolchains, e.g., at least ``g++-9``, more recent ``cmake-3.x.x`` versions, ideally 
+a matching ``gdb``, and upgraded GNU ``binutils`` packages. Performing this particular step in the user's 
+home directory is complicated, can take days to bootstrap and build (from experience), and is at any rate something the 
+local sysadmin team can do quickly. Therefore, we minimally require a ``sudo`` enabled user of our target Linux 
+system to make the following list of tools available globally:
+* At least ``g++-9`` (RH can be upgraded to this toolchain easily). The ``c++11`` or ``gnu++1x`` standard support is 
+required to build recent ``libboost`` support locally.
+* Upgraded ``cmake`` installations. The local CGAL as of today (*2020.09.08*) needs at least a version of the 
+following: ``CMake 3.1 or higher is required.``
+* Other local install prerequisites to be documented here (**TODO**)
+
 
 ## Logging in from campus or over VPN
 
