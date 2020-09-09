@@ -41,18 +41,20 @@ required to build recent ``libboost`` support locally.
 following: ``CMake 3.1 or higher is required.``
 * Other local install prerequisites to be documented here (**TODO**)
 
-
-## Logging in from campus or over VPN
+### Logging in from campus or over VPN
 
 ```bash
 ssh my-username-mds@ssh.math.gatech.edu
 ssh math-mulberry
-whoami
 ```
 
-## Cloning the PMFE code (and initial setup)
+### Run once commands to configure your math machine terminal
 
-### Make a wrapper directory for the local install files
+```bash
+scl enable devtoolset-9 /bin/bash
+```
+
+### Make a wrapper directory for the local PMFE install files
 
 ```bash
 mkdir GTDMMBSoftware2020
@@ -63,19 +65,30 @@ git checkout math-mulberry-testing
 cd ../
 ```
 
-### Fetch and extract library sources
+## Fetch and extract core external library sources
 
-#### Boost C++ libraries
+### Build the interface (B2 script) for recent Boost C++ libraries
 
 ```bash
 git clone https://github.com/boostorg/build.git
 cd build
 CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh cxx
-## TODO, below here for tonight ... 
-./b2 install
+./b2 install --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall)
+cd ..
 ```
 
-#### CGAL (multiprocessing library sources, depends on Boost)
+### Build and install a sane local CMake toolchain
+
+```bash
+wget https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2.tar.gz
+tar xvzf cmake-3.18.2.tar.gz
+cd cmake-3.18.2
+./bootstrap
+make
+make install
+```
+
+#### Install CGAL tools -- multiprocessing library sources and headers (depends on Boost and CMake)
 
 ```bash
 git clone https://github.com/CGAL/cgal.git
