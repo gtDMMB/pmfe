@@ -77,17 +77,16 @@ tar xvjf boost_1_74_0.tar.bz2
 cd boost_1_74_0
 CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) \
       --with-libraries=program_options,regex,filesystem,system,log cxx
-# TODO
-```
+./b2 headers
+./b2 install
 
+...patience...
+...patience...
+...patience...
+...found 37004 targets...
+...updating 15911 targets...
 
-#### Old (not working instructions) -- (B2 script) -- TODO: Remove this
-```bash
-git clone https://github.com/boostorg/build.git
-cd build
-CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) --with-libraries=program_options,regex,filesystem,system,log cxx
-./b2 install 
-cd ..
+cd ../pmfe
 ```
 
 ### 📰 Build and install a sane local CMake toolchain
