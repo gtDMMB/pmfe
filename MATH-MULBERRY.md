@@ -26,7 +26,7 @@ this branch, and compile from the modified ``Makefile`` contained therein.
 
 [--**Now, let us get started with the documentation procedure below.** --]
 
-## 🙋 Things to ask your Linux sysadmin for before we can dig in and get our terminals in the mix ...
+## 🙋 Things to ask your Linux sysadmin for before we can dig in with our terminal
 
 I am going to keep a short log of the system software that **IS** (very much) needed to be installed 
 systemwide to get this local install method working. Unfotunately, there is an important need to get 
