@@ -69,7 +69,7 @@ cd ../
 
 ### 📰 Build the interface for recent Boost C++ libraries
 
-The current documentation notes are [here](TODO) **TODO**. 
+The current documentation notes are [here](https://phylogeny.uconn.edu/tutorial-v2/part-1-ide-project-v2/setting-up-the-boost-c-library-v2/#). 
 In summary, we run the following commands:
 ```bash
 wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2
@@ -86,7 +86,7 @@ CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap
 ...found 37004 targets...
 ...updating 15911 targets...
 
-cd ../pmfe
+cd ..
 ```
 
 ### 📰 Build and install a sane local CMake toolchain
