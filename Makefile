@@ -26,21 +26,21 @@ CXXFLAGS += -fopenmp
 CXXFLAGS += -Wall
 CXXFLAGS += -g
 CXXFLAGS += -O3
-CXXFLAGS += -Iinclude $(INCLUDES) $(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
+CXXFLAGS += -Iinclude $(INCLUDES) -I$(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
 		-DBOOST_FILESYSTEM_NO_DEPRECATED \
 		-I$(shell readlink -f ../BoostLocalInstall/include) \
 		-frounding-math -DBOOST_LOG_DYN_LINK=0 -DCGAL_HEADER_ONLY
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
-LIBS += -lgmp -lgmpxx
-LIBS += -lCGAL
+LIBS += -static -lgmp -lgmpxx
+LIBS += -L$(shell readlink -f ../BoostLocalInstall/lib)
 LIBS += -lm
 LIBS += -lboost_filesystem
 LIBS += -lboost_program_options
 LIBS += -lboost_system
 LIBS += -lboost_log
-LIBS += -frounding-math -lboost_log_setup -lboost_log-mt
+LIBS += -frounding-math -lboost_log_setup -lpthread
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
 all: $(OBJ) $(BIN)
@@ -51,19 +51,19 @@ debug: CXXFLAGS += -Og
 debug: all
 
 pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) $^ -o $@ $(LIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 pmfe-scorer: $(LIBOBJ) src/bin-scorer.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) $^ -o $@ $(LIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) $^ -o $@ $(LIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 pmfe-subopt: $(LIBOBJ) src/bin-subopt.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) $^ -o $@ $(LIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) $^ -o $@ $(LIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 %.o: %.cc
 	$(CXX) -MD $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
