@@ -58,19 +58,24 @@ debug: all
 ## Note we are having to (re)set the C++ standard to get compatibility in the 
 ## broken, non-cohesive feature sets on the local compiler. This is not an 
 ## exact science, but rather success by trial and error (Sigh.)
-pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-findmfe: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-scorer: $(LIBOBJ) src/bin-scorer.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-scorer: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-scorer: $(LIBOBJ) src/bin-scorer.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o CXXFLAGS= -std=c++11 $(CXXFLAGS_BASE)
+pmfe-parametrizer: CXXFLAGS= -std=c++11 $(CXXFLAGS_BASE)
+pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-subopt: $(LIBOBJ) src/bin-subopt.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-subopts: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE) 
+pmfe-subopt: $(LIBOBJ) src/bin-subopt.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-tests: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE) 
+pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 %.o: %.cc
