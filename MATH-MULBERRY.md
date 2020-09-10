@@ -139,6 +139,7 @@ cd ..
 ```bash
 cd pmfe
 make
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -f ../BoostLocalInstall/lib)
 time ./pmfe-parametrizer -v -t 6 -o test_seq/tRNA/o.nivara_tRNA.rnapoly test_seq/tRNA/o.nivara_tRNA.fasta
 ```
 That should be it for a fresh compile of the Python objects we will require in ``sage-math``. 
