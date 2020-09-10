@@ -32,6 +32,7 @@ CXXFLAGS += -Iinclude $(INCLUDES) -I$(shell readlink -f ../cgal/*/include | tr "
 		-I$(shell readlink -f ../BoostLocalInstall/include) \
 		-frounding-math -DCGAL_HEADER_ONLY -DBOOST_LOG_DYN_LINK -BOOST_ALL_DYN_LINK \
 		$(shell pkg-config gmp --cflags) $(shell pkg-config gmpxx --cflags)
+CXXFLAGS_BASE := $(CXXFLAGS)
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
@@ -57,20 +58,20 @@ debug: all
 ## Note we are having to (re)set the C++ standard to get compatibility in the 
 ## broken, non-cohesive feature sets on the local compiler. This is not an 
 ## exact science, but rather success by trial and error (Sigh.)
-pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o
-	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
+pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-scorer: $(LIBOBJ) src/bin-scorer.o
-	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
+pmfe-scorer: $(LIBOBJ) src/bin-scorer.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o
-	$(CXX) -std=c++11 $(CXXFLAGS) $^ $(LIBS) -o $@
+pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o CXXFLAGS= -std=c++11 $(CXXFLAGS_BASE)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-subopt: $(LIBOBJ) src/bin-subopt.o
-	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
+pmfe-subopt: $(LIBOBJ) src/bin-subopt.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o
-	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
+pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 %.o: %.cc
 	$(CXX) -MD $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
