@@ -20,7 +20,8 @@ INCLUDES += -IiB4e
 INCLUDES += -I/usr/local/include # For Homebrew
 
 # C++ compiler flags
-CXXFLAGS += --std=gnu++14 -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
+CXXFLAGS += -Wall -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden \
+		-D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
 CXXFLAGS += -fPIC
 CXXFLAGS += -fopenmp
 CXXFLAGS += -Wall
@@ -29,19 +30,20 @@ CXXFLAGS += -O3
 CXXFLAGS += -Iinclude $(INCLUDES) -I$(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
 		-DBOOST_FILESYSTEM_NO_DEPRECATED \
 		-I$(shell readlink -f ../BoostLocalInstall/include) \
-		-frounding-math -DCGAL_HEADER_ONLY -DBOOST_LOG_DYN_LINK -BOOST_ALL_DYN_LINK
+		-frounding-math -DCGAL_HEADER_ONLY -DBOOST_LOG_DYN_LINK -BOOST_ALL_DYN_LINK \
+		$(shell pkg-config gmp --cflags) $(shell pkg-config gmpxx --cflags)
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
-#LIBS += -L/opt/rh/devtoolset-9/root/usr/lib/gcc/x86_64-redhat-linux/9 -lgmp -lgmpxx
-LIBS += $(shell pkg-config gmpxx --static --libs)
+LIBS += -L/opt/rh/devtoolset-9/root/usr/lib/gcc/x86_64-redhat-linux/9 -lstdc++
+LIBS += $(shell pkg-config gmp --libs) $(shell pkg-config gmpxx --libs)
 LIBS += -L$(shell readlink -f ../BoostLocalInstall/lib)
 LIBS += -lm
-LIBS += -static -lboost_filesystem
+LIBS += -lboost_filesystem
 LIBS += -lboost_program_options
 LIBS += -lboost_system
 LIBS += -lboost_log
-LIBS += -frounding-math -lboost_log_setup 
+LIBS += -frounding-math -lboost_log_setup -lboost_thread -lboost_atomic -lboost_regex -lboost_chrono
 LIBS += -Wl,-Bdynamic -lpthread
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
