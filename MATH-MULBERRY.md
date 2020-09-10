@@ -48,7 +48,7 @@ ssh my-username-mds@ssh.math.gatech.edu
 ssh math-mulberry
 ```
 
-### #️⃣ Run once commands to configure your math machine terminal
+### #️⃣ Run once per login commands to configure your math machine terminal
 
 ```bash
 scl enable devtoolset-9 /bin/bash
@@ -75,8 +75,9 @@ In summary, we run the following commands:
 wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2
 tar xvjf boost_1_74_0.tar.bz2
 cd boost_1_74_0
-CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0" ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) \
-      --with-libraries=program_options,regex,filesystem,system,log cxx
+CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0 -DBOOST_LOG_USE_STD_REGEX -DBOOST_ALL_DYN_LINK" LDFLAGS="-static" \
+      ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) \
+      --with-libraries=program_options,regex,filesystem,system,log,thread,atomic,chrono cxx
 ./b2 headers
 ./b2 install
 
@@ -121,18 +122,30 @@ cmake31 ../ -DCMAKE_BUILD_TYPE=Release
 cd ../..
 ```
 
+### Install libgmp and libgmpxx locally
+
+```bash
+wget https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2
+cd gmp-6.2.0
+./configure --prefix=$(readlink -f .) --enable-cxx
+make && make install
+export PKG_CONFIG_PATH=$(readlink -f .)
+cd ..
+```
+
 ## Back to compiling and running the PMFE code sources
 
 ```bash
 cd pmfe
 make
+time ./pmfe-parametrizer -v -t 6 -o test_seq/tRNA/o.nivara_tRNA.rnapoly test_seq/tRNA/o.nivara_tRNA.fasta
 ```
 That should be it for a fresh compile of the Python objects we will require in ``sage-math``. 
 So we test as follows:
 ```bash
-sage9.0
-sage: from TODO import *
-sage: Run TODO
+sage
+sage: from rna_poly import *
+sage: time RNAPolytope.construct_from_file("test_seq/tRNA/o.nivara_tRNA.rnapoly")
 ```
 
 ## 🐞 Debugging and troubleshooting
