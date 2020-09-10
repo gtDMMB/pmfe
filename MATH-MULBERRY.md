@@ -75,17 +75,18 @@ In summary, we run the following commands:
 wget https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.bz2
 tar xvjf boost_1_74_0.tar.bz2
 cd boost_1_74_0
-CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0 -DBOOST_LOG_USE_STD_REGEX -DBOOST_ALL_DYN_LINK" LDFLAGS="-static" \
+CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0 -DBOOST_LOG_USE_STD_REGEX -DBOOST_ALL_DYN_LINK" \
       ./bootstrap.sh --prefix=$(readlink -f ~/GTDMMBSoftware2020/BoostLocalInstall) \
       --with-libraries=program_options,regex,filesystem,system,log,thread,atomic,chrono cxx
 ./b2 headers
 ./b2 install
+cd ~/GTDMMBSoftware2020/BoostLocalInstall/lib
+rm ./*.a ./*.so.1.74.0
 
 ...patience...
 ...patience...
 ...patience...
-...found 37004 targets...
-...updating 15911 targets...
+...patience...
 
 cd ..
 ```
