@@ -20,8 +20,7 @@ INCLUDES += -IiB4e
 INCLUDES += -I/usr/local/include # For Homebrew
 
 # C++ compiler flags
-CXXFLAGS += -Wall -std=c++0x -std=c++11 -std=gnu++11 \
-		-fvisibility=hidden -fvisibility-inlines-hidden \
+CXXFLAGS += -Wall -fvisibility=hidden -fvisibility-inlines-hidden \
 		-D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
 CXXFLAGS += -fPIC
 CXXFLAGS += -fopenmp
@@ -55,20 +54,23 @@ all: $(OBJ) $(BIN)
 debug: CXXFLAGS += -Og
 debug: all
 
+## Note we are having to (re)set the C++ standard to get compatibility in the 
+## broken, non-cohesive feature sets on the local compiler. This is not an 
+## exact science, but rather success by trial and error (Sigh.)
 pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o
-	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
 
 pmfe-scorer: $(LIBOBJ) src/bin-scorer.o
-	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
 
 pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o
-	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+	$(CXX) -std=c++11 $(CXXFLAGS) $^ $(LIBS) -o $@
 
 pmfe-subopt: $(LIBOBJ) src/bin-subopt.o
-	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
 
 pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o
-	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+	$(CXX) -std=c++0x $(CXXFLAGS) $^ $(LIBS) -o $@
 
 %.o: %.cc
 	$(CXX) -MD $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
