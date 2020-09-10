@@ -159,3 +159,5 @@ If for some reason this procedure no longer works, I suggest troubleshooting alo
   If so, it is not difficult to download the latest sources, configure, and make them locally in the 
   user's home directory. This process has been known to take overnight. Then, as above, export an alias to the 
   local ``sage`` binary to run it and its local Python interpreter (or ``ipython shell``).
+* An idea to explicitly use the local ``boost::log::*`` namespace for persistent problems linking against this 
+  part of the library is [here](https://stackoverflow.com/a/40277727/10661959).
