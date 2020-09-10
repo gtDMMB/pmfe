@@ -20,7 +20,8 @@ INCLUDES += -IiB4e
 INCLUDES += -I/usr/local/include # For Homebrew
 
 # C++ compiler flags
-CXXFLAGS += -Wall -std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden \
+CXXFLAGS += -Wall -std=c++0x -std=c++11 -std=gnu++11 \
+		-fvisibility=hidden -fvisibility-inlines-hidden \
 		-D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
 CXXFLAGS += -fPIC
 CXXFLAGS += -fopenmp
