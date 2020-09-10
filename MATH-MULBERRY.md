@@ -127,6 +127,7 @@ cd ../..
 
 ```bash
 wget https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2
+tar xvjf gmp-6.2.0.tar.bz2
 cd gmp-6.2.0
 ./configure --prefix=$(readlink -f .) --enable-cxx
 make && make install
