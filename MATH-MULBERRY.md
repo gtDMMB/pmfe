@@ -81,7 +81,7 @@ CXX="g++" CXXFLAGS="-std=gnu++0x -D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0 -DBOOST_LOG_
 ./b2 headers
 ./b2 install
 cd ~/GTDMMBSoftware2020/BoostLocalInstall/lib
-rm ./*.a ./*.so.1.74.0
+rm ./*.a
 
 ...patience...
 ...patience...
@@ -127,6 +127,7 @@ cd ../..
 
 ```bash
 wget https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2
+tar xvjf gmp-6.2.0.tar.bz2
 cd gmp-6.2.0
 ./configure --prefix=$(readlink -f .) --enable-cxx
 make && make install
