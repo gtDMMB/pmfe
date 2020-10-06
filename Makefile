@@ -20,8 +20,7 @@ INCLUDES += -IiB4e
 INCLUDES += -I/usr/local/include # For Homebrew
 
 # C++ compiler flags
-CXXFLAGS += -Wall -fvisibility=hidden -fvisibility-inlines-hidden \
-		-D_GLIBCXX_USE_CXX11_ABI=0 -DABI=0
+CXXFLAGS += -Wall -fvisibility=hidden -fvisibility-inlines-hidden -frounding-math -DABI=0
 CXXFLAGS += -fPIC
 CXXFLAGS += -fopenmp
 CXXFLAGS += -Wall
@@ -30,9 +29,12 @@ CXXFLAGS += -O3
 CXXFLAGS += -Iinclude $(INCLUDES) -I$(shell readlink -f ../cgal/*/include | tr "\n" " " | sed -e 's/ / -I/g') \
 		-DBOOST_FILESYSTEM_NO_DEPRECATED \
 		-I$(shell readlink -f ../BoostLocalInstall/include) \
-		-frounding-math -DCGAL_HEADER_ONLY -DBOOST_LOG_DYN_LINK -BOOST_ALL_DYN_LINK \
+		-DCGAL_HEADER_ONLY -UBOOST_DISABLE_THREADS -DBOOST_LOG_DYN_LINK -BOOST_ALL_DYN_LINK \
 		$(shell pkg-config gmp --cflags) $(shell pkg-config gmpxx --cflags)
 CXXFLAGS_BASE := $(CXXFLAGS)
+
+CXX_STDV11= -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1
+CXX_STDV0X= -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=0 
 
 # library paths
 LIBS += -L/usr/local/lib # For Homebrew
@@ -46,6 +48,7 @@ LIBS += -lboost_system
 LIBS += -lboost_log
 LIBS += -frounding-math -lboost_log_setup -lboost_thread -lboost_atomic -lboost_regex -lboost_chrono
 LIBS += -Wl,-Bdynamic -lpthread
+#LIBS += -Wl,--no-undefined -Wl,--no-allow-shlib-undefined
 
 BIN = pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
 all: $(OBJ) $(BIN)
@@ -58,28 +61,28 @@ debug: all
 ## Note we are having to (re)set the C++ standard to get compatibility in the 
 ## broken, non-cohesive feature sets on the local compiler. This is not an 
 ## exact science, but rather success by trial and error (Sigh.)
-pmfe-findmfe: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-findmfe: CXXFLAGS:= $(CXX_STDV0X) $(CXXFLAGS_BASE)
 pmfe-findmfe: $(LIBOBJ) src/bin-findmfe.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-scorer: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE)
+pmfe-scorer: CXXFLAGS:= $(CXX_STDV0X) $(CXXFLAGS_BASE)
 pmfe-scorer: $(LIBOBJ) src/bin-scorer.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-parametrizer: CXXFLAGS= -std=c++11 $(CXXFLAGS_BASE)
+pmfe-parametrizer: CXXFLAGS:= $(CXX_STDV0X) $(CXXFLAGS_BASE)
 pmfe-parametrizer: $(LIBOBJ) src/bin-parametrizer.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-subopts: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE) 
+pmfe-subopt: CXXFLAGS:= $(CXX_STDV0X) $(CXXFLAGS_BASE) 
 pmfe-subopt: $(LIBOBJ) src/bin-subopt.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
-pmfe-tests: CXXFLAGS= -std=c++0x $(CXXFLAGS_BASE) 
+pmfe-tests: CXXFLAGS:= $(CXX_STDV0X) $(CXXFLAGS_BASE) 
 pmfe-tests: $(LIBOBJ) $(TESTOBJ) src/bin-tests.o
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 %.o: %.cc
-	$(CXX) -MD $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CXX) -MD $(CXX_STDV0X) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 	@cp $*.d $*.P; \
         sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
             -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \

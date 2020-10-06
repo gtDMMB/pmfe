@@ -4,6 +4,7 @@
 #include "pmfe_types.h"
 #include "nndb_constants.h"
 #include "nntm.h"
+#include "pmfe_logging.h"
 
 #include <iostream>
 #include <string>
@@ -12,7 +13,6 @@
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
 
-//#define BOOST_LOG_DYN_LINK 1 // Fix an issue with dynamic library loading
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
@@ -63,6 +63,7 @@ int main(int argc, char * argv[]) {
         boost::log::core::get()->set_filter
             (boost::log::trivial::severity >= boost::log::trivial::warning);
     }
+    //PMFELogger::Init();
 
     // Process structure-related options
     fs::path seq_file(vm["sequence"].as<std::string>());
