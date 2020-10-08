@@ -12,7 +12,6 @@
 #include "subopt.h"
 #include "rational.h"
 
-#define BOOST_LOG_DYN_LINK 1 // Fix an issue with dynamic library loading
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
