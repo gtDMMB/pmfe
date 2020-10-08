@@ -144,7 +144,16 @@ namespace pmfe {
             theint = abs(theint);
 
             // Carve out the fractional part. Surprisingly fiddly!
-            int fracdenom = pow(10, fracpart.length());
+            // Handle a corner case where the fractional part is all zeros:
+            int fracdenom = 1;
+            unsigned int lastNonZeroPos = fracpart.find_last_of("0");
+            if(lastNonZeroPos != std::string::npos) {
+                 while(lastNonZeroPos != std::string::npos) {
+                      fracpart = fracpart.substr(0, lastNonZeroPos);
+                      lastNonZeroPos = fracpart.find_last_of("0");
+                 }
+                 fracdenom = pow(10, fracpart.length());
+            }
             Integer fracval (fracpart, 10);
             Rational thefrac (fracval, fracdenom);
             thefrac.canonicalize();
