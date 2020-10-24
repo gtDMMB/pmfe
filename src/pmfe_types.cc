@@ -137,7 +137,7 @@ namespace pmfe {
         bool negative = (word.find('-') != std::string::npos);
         if (decimalpoint != std::string::npos) {
             std::string intpart = word.substr(0, decimalpoint);
-            std::string fracpart = word.substr(decimalpoint+1);
+            std::string fracpart = word.substr(decimalpoint + 1);
 
             if (intpart == "") intpart = "0";
             Integer theint (intpart, 10);
@@ -146,13 +146,18 @@ namespace pmfe {
             // Carve out the fractional part. Surprisingly fiddly!
             // Handle a corner case where the fractional part is all zeros:
             int fracdenom = 1;
-            unsigned int lastNonZeroPos = fracpart.find_last_of("0");
-            if(lastNonZeroPos != std::string::npos) {
-                 while(lastNonZeroPos != std::string::npos) {
-                      fracpart = fracpart.substr(0, lastNonZeroPos);
-                      lastNonZeroPos = fracpart.find_last_of("0");
+            int lastNonZeroPos = fracpart.find_last_of("0");
+            while(lastNonZeroPos + 1 == fracpart.length() && lastNonZeroPos != std::string::npos) {
+                 if(lastNonZeroPos == 0) {
+                      fracpart = "";
+                      break;
                  }
-                 fracdenom = pow(10, fracpart.length());
+                 fracpart = fracpart.substr(0, lastNonZeroPos);
+                 lastNonZeroPos = fracpart.find_last_of("0");
+            } 
+            fracdenom = pow(10, fracpart.length());
+            if(fracpart == "") {
+                 fracpart = "0";
             }
             Integer fracval (fracpart, 10);
             Rational thefrac (fracval, fracdenom);
@@ -167,7 +172,7 @@ namespace pmfe {
         result.canonicalize();
         return result;
     };
-
+    
     RNASequence::RNASequence(const std::string& seq):
         seq_txt(seq)
     {
