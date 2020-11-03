@@ -8,3 +8,10 @@
 *.rnapoly
 *.rnasubopt
 
+build/
+build/*
+
+include/pmfe_build_config.h
+wrapper-runner-script/PMFECommandRunner.sh
+wrapper-runner-script/PMFEDeveloperCommandRunner.sh
+

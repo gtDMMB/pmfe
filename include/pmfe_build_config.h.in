@@ -1,0 +1,42 @@
+/* pmfe_build_config.h.in : Source file to generate an on-the-fly build configuration header file at compile time.
+ * Author: Maxie D. Schmidt (github.com/maxieds)
+ * Created: 2020.11.02
+ */
+
+#ifndef __PMFE_LOCAL_BUILD_CONFIG_AUTOGEN_H__
+#define __PMFE_LOCAL_BUILD_CONFIG_AUTOGEN_H__
+
+#include <string>
+
+namespace PMFEBuild {
+
+     /* Define parameters that describe the CMake configuration and build environment: */
+     const std::string CMAKE_VERSION             = "${CMAKE_VERSION}";
+     const std::string CMAKE_SYSTEM_VERSION      = "${CMAKE_SYSTEM_VERSION}";
+     const std::string CMAKE_SYSTEM_PROCESSOR    = "${CMAKE_SYSTEM_PROCESSOR}";
+     const std::string CMAKE_HOST_SYSTEM_NAME    = "${CMAKE_HOST_SYSTEM_NAME}";
+     const std::string CMAKE_C_FLAGS             = "${CMAKE_C_FLAGS}";
+     const std::string CMAKE_CXX_FLAGS           = "${CMAKE_CXX_FLAGS}";
+     const std::string CMAKE_BUILD_TYPE          = "${CMAKE_BUILD_TYPE}";
+     const std::string CMAKE_EXE_LINKER_FLAGS    = "${CMAKE_EXE_LINKER_FLAGS}";
+     const std::string CMAKE_SHARED_LINKER_FLAGS = "${CMAKE_SHARED_LINKER_FLAGS}";
+
+     /* PMFE source and build script version information: */
+     const std::string PMFE_PACKAGE_NAME         = "${PMFE_PACKAGE_NAME}";
+     const std::string PMFE_PACKAGE_VERSION      = "${PMFE_PACKAGE_VERSION}";
+     const std::string PMFE_PACKAGE_STRING       = "${PMFE_PACKAGE_STRING}";
+     const std::string PMFE_GIT_COMMIT_HASH      = "${PMFE_BUILD_GIT_COMMIT_HASH}";
+     const std::string PMFE_GIT_COMMIT_DATE      = "${PMFE_BUILD_GIT_COMMIT_DATA}";
+     const std::string PMFE_BUILD_DATE           = "${PMFE_BUILD_DATESTAMP}";
+
+     /* Set the absolute build path of the working PMFE source directory 
+      * so that the testing sequence and Turner99 thermodynamic data files 
+      * can be found at runtime without needing to change the working directories: 
+      */
+     const std::string PMFE_BUILD_ABS_BASE_PATH  = "${PMFE_BUILD_ABS_WORKING_DIR}";
+     const std::string TURNER99_DATA_DIR         = PMFE_BUILD_ABS_BASE_PATH + "/Turner99";
+     const std::string TESTING_SEQ_DATA_DIR      = PMFE_BUILD_ABS_BASE_PATH + "/test/seq";
+
+} // namespace PMFEBuild
+
+#endif
