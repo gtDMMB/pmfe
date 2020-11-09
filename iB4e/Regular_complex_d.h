@@ -92,7 +92,7 @@ public:
 
   void* pp;
   void*   for_compact_container() const { return pp; }
-  void* & for_compact_container()       { return pp; }
+  void* & for_compact_container(void *ppPtr)       { pp = ppPtr; return pp; }
 
 #ifdef CGAL_USE_LEDA
   LEDA_MEMORY(RC_vertex_d)
@@ -162,7 +162,7 @@ public:
 
   void* pp;
   void*   for_compact_container() const { return pp; }
-  void* & for_compact_container()       { return pp; }
+  void* & for_compact_container(void *ppPtr)       { pp = ppPtr; return pp; }
 
   // ----- Added for iB4e
   bool& is_confirmed() { return confirmed_; };

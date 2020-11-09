@@ -4,18 +4,7 @@
 #### Author: Maxie D. Schmidt (github.com/maxieds)
 #### Created: 2020.11.02
 
-## Set the absolute location of the path to the PMFE sources:
-if(APPLE)
-    execute_process (
-        COMMAND bash -c "greadlink -f ."
-        OUTPUT_VARIABLE BuildAbsPath
-    )
-elseif(UNIX AND NOT APPLE)
-    execute_process (
-        COMMAND bash -c "readlink -f ."
-        OUTPUT_VARIABLE BuildAbsPath
-    )
-endif()
+### TODO -> Need to update ... !!!
 
 ## Set the build time datestamp for reference:
 execute_process (
@@ -34,38 +23,40 @@ execute_process (
 )
 
 ## Define all of the file placeholders we will substitute the live configuration data into:
-## Syntax: "[SUBST_PLACEHOLDER_NAME]->ActualValue" denotes that we will replace the string
-##         '${SUBST_PLACEHOLDER_NAME}' with 'ActualValue' below.
-list(APPEND PMFEWrapperRunnerScriptSubstsList "[PMFE_BUILD_TIMESTAMP]->${BuildTimeStamp}")
-list(APPEND PMFEWrapperRunnerScriptSubstsList "[PMFE_BUILD_GIT_COMMIT_HASH]->${BuildGitCommitHash}")
-list(APPEND PMFEWrapperRunnerScriptSubstsList "[PMFE_BUILD_GIT_COMMIT_DATE]->${BuildGitCommitDate}")
-list(APPEND PMFEWrapperRunnerScriptSubstsList "[PMFE_BUILD_ABS_BINARY_DIR_PATH]->${BuildAbsPath}")
+## Syntax: '--SUBST_PLACEHOLDER_NAME---ActualValue' denotes that we will replace the string
+##         'SUBST_PLACEHOLDER_NAME' with 'ActualValue' below.
+list(APPEND PMFEWrapperRunnerScriptSubstsList '--PMFE_BUILD_TIMESTAMP---${BuildTimeStamp}')
+list(APPEND PMFEWrapperRunnerScriptSubstsList '--PMFE_BUILD_GIT_COMMIT_HASH---${BuildGitCommitHash}')
+list(APPEND PMFEWrapperRunnerScriptSubstsList '--PMFE_BUILD_GIT_COMMIT_DATE---${BuildGitCommitDate}')
+list(APPEND PMFEWrapperRunnerScriptSubstsList '--PMFE_BUILD_ABS_BINARY_DIR_PATH---${BuildAbsPath}")
 
 ## Copy the stub header file to the build-time location:
-set(PMFEWrapperRunnerScriptStubPath "${buildAbsPath}/wrapper-runner-script/PMFECommandRunner.sh.in")
-set(PMFEWrapperRunnerScriptNewPath  "${buildAbsPath}/wrapper-runner-script/PMFECommandRunner.sh")
-file(
-    COPY ${PMFEWrapperRunnerScriptStubPath}
-    DESTINATION ${PMFEWrapperRunnerScriptNewPath}
+
+set(PMFEWrapperRunnerScriptStubPath "wrapper-runner-script/PMFECommandRunner.sh.in")
+set(PMFEWrapperRunnerScriptNewPath  "wrapper-runner-script/PMFECommandRunner.sh")
+execute_process (
+         COMMAND bash -c "cp ${PMFEWrapperRunnerScriptStubPath} ${PMFEWrapperRunnerScriptNewPath}"
 )
-set(PMFEWrapperDevRunnerScriptStubPath "${buildAbsPath}/wrapper-runner-script/PMFEDeveloperCommandRunner.sh.in")
-set(PMFEWrapperDevRunnerScriptNewPath  "${buildAbsPath}/wrapper-runner-script/PMFEDeveloperCommandRunner.sh")
-file(
-    COPY ${PMFEWrapperDevRunnerScriptStubPath}
-    DESTINATION ${PMFEWrapperDevRunnerScriptNewPath}
+
+set(PMFEWrapperDevRunnerScriptStubPath "wrapper-runner-script/PMFEDeveloperCommandRunner.sh.in")
+set(PMFEWrapperDevRunnerScriptNewPath  "wrapper-runner-script/PMFEDeveloperCommandRunner.sh")
+execute_process (
+         COMMAND bash -c "cp ${PMFEWrapperDevRunnerScriptStubPath} ${PMFEWrapperDevRunnerScriptNewPath}"
 )
 
 ## Substitute the placeholders in that file with the live build config information:
-function(Func_substPMFEWrapperRunnerScriptParam "${SUBST_VAR_NAME}" "${SUBST_VAR_VALUE}" "${OUTFILE_PATH}")
-     message(DEBUG "Substituting ${SUBST_VAR_NAME} -> ${SUBST_VAR_VALUE} in ${OUTFILE_PATH} ...")
+function(Func_substPMFEWrapperRunnerScriptParam ${SUBST_VAR_NAME} ${SUBST_VAR_VALUE} ${OUTFILE_PATH})
+     message(STATUS "Substituting ${SUBST_VAR_NAME} ==> ${SUBST_VAR_VALUE} in ${OUTFILE_PATH} ...")
      execute_process (
-         COMMAND bash -c "sed -i 's/\$\{${SUBST_VAR_NAME}\}/${SUBST_VAR_VALUE}/' ${OUTFILE_PATHh}"
+         COMMAND bash -c "sed -i \"s|${SUBST_VAR_NAME}|${SUBST_VAR_VALUE}|\" ${OUTFILE_PATH}"
      )
 endfunction(Func_substPMFEConfigHeaderParam)
 
 function(Func_substPMFEWrapperRunnerScriptParamFromSpec "${FULL_CONFIG_SUBST_SPEC}" "${OUTFILE_PATH}")
-     string(REGEX "(\[[^\ ]+\])->" FuncInput_localParamName "${FULL_CONFIG_SUBST_SPEC}")
-     string(REGEX "->[^\ ]+$" FuncInput_localParamValue "${FULL_CONFIG_SUBST_SPEC}")
+     string(REGEX MATCH "--[^\ ]+---" FuncInput_localParamName "${FULL_CONFIG_SUBST_SPEC}")
+     string(REGEX REPLACE "-" "" FuncInput_localParamName "${FuncInput_localParamValue}")
+     string(REGEX MATCH "---[^\ ]+$" FuncInput_localParamValue "${FULL_CONFIG_SUBST_SPEC}")
+     string(REGEX REPLACE "---" "" FuncInput_localParamValue "${FuncInput_localParamValue}")
      Func_substPMFEWrapperRunnerScriptParam(
           "${FuncInput_localParamName}"
           "${FuncInput_localParamValue}"
@@ -73,7 +64,7 @@ function(Func_substPMFEWrapperRunnerScriptParamFromSpec "${FULL_CONFIG_SUBST_SPE
      )
 endfunction(Func_substPMFEConfigHeaderParamFromSpec)
 
-foreach(PMFE_RUNNER_SCRIPT_SUBST_SPEC ${PMFEWrapperRunnerScriptSubstsList} "${OUTFILE_PATH}")
+foreach(PMFE_RUNNER_SCRIPT_SUBST_SPEC ${PMFEWrapperRunnerScriptSubstsList} ${OUTFILE_PATH})
      Func_substPMFEWrapperRunnerScriptParamFromSpec(
           "${PMFE_RUNNER_SCRIPT_SUBST_SPEC}"
           "${PMFEWrapperRunnerScriptNewPath}"
