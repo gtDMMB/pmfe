@@ -145,12 +145,13 @@ endforeach()
 ## Build the binaries for the PMFE project:
 
 add_custom_command(
-    OUTPUT BuildConfigHeaderIsSetup
+    OUTPUT "${PROJECT_SOURCE_DIR}/include/pmfe_build_config.h"
     COMMAND cmake "-P" "${PROJECT_SOURCE_DIR}/cmake/AutogenBuildConfigHeader.cmake"
+    COMMAND touch "${PROJECT_SOURCE_DIR}/include/pmfe_build_config.h"
 )
 add_custom_target(
      BuildConfigHeader ALL
-     DEPENDS BuildConfigHeaderIsSetup
+     DEPENDS "${PROJECT_SOURCE_DIR}/include/pmfe_build_config.h"
 )
 
 file(GLOB ALL_TARGET_SOURCES src/*.cc)
