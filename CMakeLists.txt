@@ -258,28 +258,8 @@ install(
 )
 
 ## Backup the old wrapper scripts and copy the new ones in their place:
-install(
-    SCRIPT cmake/PostBuildAutogenWrapperScript.cmake
-)
-
-set(UserRunnerScriptPath "../../PMFECommandRunner.sh")
-set(DevRunnerScriptPath  "../../PMFEDeveloperCommandRunner.sh")
-set(SageInitScriptPath   "../../init.sage")
-set(SageInitScriptNestedPath   "../SageInit/init.sage")
-
-execute_process (
-         COMMAND bash -c
-                "cp ${UserRunnerScriptPath} ${UserRunnerScriptPath}.bak &&
-                cp ${DevRunnerScriptPath} ${DevRunnerScriptPath}.bak &&
-                cp ${SageInitScriptPath} ${SageInitScriptPath}.bak &&
-                cp ${SageInitScriptNestedPath} ${SageInitScriptNestedPath}.bak"
-)
-execute_process (
-         COMMAND bash -c
-                "cp wrapper-runner-script/PMFECommandRunner.sh ${UserRunnerScriptPath} &&
-                cp wrapper-runner-script/PMFEDeveloperCommandRunner.sh ${DevRunnerScriptPath} &&
-                cp wrapper-runner-script/init.sage ${SageInitScriptPath} &&
-                cp wrapper-runner-script/init.sage ${SageInitScriptNestedPath}"
+execute_process(
+     COMMAND cmake "-P" "${PROJECT_SOURCE_DIR}/cmake/PostBuildAutogenWrapperScript.cmake"
 )
 
 ## Running of unit tests configuration:

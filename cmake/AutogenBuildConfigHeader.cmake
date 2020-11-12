@@ -55,9 +55,15 @@ execute_process (
 ## Substitute the placeholders in that file with the live build config information:
 function(FUNC_SUBST_PMFE_CONFIG_HEADER_PARAM SUBST_VAR_NAME SUBST_VAR_VALUE)
      message(STATUS "Substituting ${SUBST_VAR_NAME} ==> ${SUBST_VAR_VALUE} in ${PMFEBuildConfigNewHeaderPath} ...")
-     execute_process (
-         COMMAND bash -c "sed -i -- \"s|${SUBST_VAR_NAME}|${SUBST_VAR_VALUE}|g\" ${PMFEBuildConfigNewHeaderPath}"
-     )
+     if(APPLE)
+         execute_process (
+             COMMAND bash -c "gsed -i -- \"s|${SUBST_VAR_NAME}|${SUBST_VAR_VALUE}|g\" ${PMFEBuildConfigNewHeaderPath}"
+         )
+     elseif(UNIX AND NOT APPLE)
+         execute_process (
+             COMMAND bash -c "sed -i -- \"s|${SUBST_VAR_NAME}|${SUBST_VAR_VALUE}|g\" ${PMFEBuildConfigNewHeaderPath}"
+         )
+     endif()
 endfunction(FUNC_SUBST_PMFE_CONFIG_HEADER_PARAM)
 
 function(FUNC_SUBST_PMFE_CONFIG_HEADER_PARAM_FROM_SPEC FULL_CONFIG_SUBST_SPEC)
