@@ -97,7 +97,9 @@ execute_process(COMMAND bash -c "cp ${DevRunnerScriptPath} ${DevRunnerScriptPath
 execute_process(COMMAND bash -c "cp ${SageInitScriptPath} ${SageInitScriptPath}.bak")
 execute_process(COMMAND bash -c "cp ${SageInitScriptNestedPath} ${SageInitScriptNestedPath}.bak")
 execute_process(COMMAND bash -c "cp wrapper-runner-script/PMFECommandRunner.sh ${UserRunnerScriptPath}")
+execute_process(COMMAND bash -c "chmod +x ${UserRunnerScriptPath}")
 execute_process(COMMAND bash -c "cp wrapper-runner-script/PMFEDeveloperCommandRunner.sh ${DevRunnerScriptPath}")
+execute_process(COMMAND bash -c "chmod +x ${DevRunnerScriptPath}")
 execute_process(COMMAND bash -c "cp wrapper-runner-script/init.sage ${SageInitScriptPath}")
 execute_process(COMMAND bash -c "cp wrapper-runner-script/init.sage ${SageInitScriptNestedPath}")
 

@@ -8,7 +8,7 @@
 PMFEWrapperScriptPrint() {
         strMsg="$1"
         PMFEWrapperScriptHdr="\033[0m \033[0;35m[PMFE-WRAPPER-SCRIPT]\033[0m"
-        echo -ne "${PMFEWrapperScriptHdr} ${strMsg}" 1>&2
+        echo -e "${PMFEWrapperScriptHdr} ${strMsg}" 1>&2
 }
 
 # Function to print environment variable names using ANSI colored terminal output:
@@ -29,8 +29,8 @@ PMFEWrapperScriptUsage() {
 # 1) The default working directory we will reset to in the PMFE source folder; and
 # 2) The location of the pre-compiled PMFE binaries.
 SCRIPT_DIR_PATH=`echo "$(readlink -f ${0})" | sed -e 's/\(.*\)\/\(.*\)\.sh$/\1/'`
-DEFAULT_PMFE_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH
-CMAKE_EXE_PATH=$(readlink -f $DEFAULT_PMFE_EXE_PATH/../cmake-*/bin/cmake)
+DEFAULT_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH
+CMAKE_EXE_PATH=$(readlink -f $DEFAULT_EXE_PATH/../cmake-*/bin/cmake)
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -f $SCRIPT_DIR_PATH/GTDMMBSoftware2020/BoostLocalInstall/lib)
 #export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(readlink -f $SCRIPT_DIR_PATH/GTDMMBSoftware2020/gmp-6.2.0)

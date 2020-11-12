@@ -13,7 +13,7 @@
 PMFEWrapperScriptPrint() {
         strMsg="$1"
         PMFEWrapperScriptHdr="\033[0m \033[0;35m[PMFE-WRAPPER-SCRIPT]\033[0m"
-        echo -ne "${PMFEWrapperScriptHdr} ${strMsg}" 1>&2
+        echo -e "${PMFEWrapperScriptHdr} ${strMsg}" 1>&2
 }
 
 # Function to print environment variable names using ANSI colored terminal output:
@@ -39,14 +39,14 @@ PMFEWrapperScriptPrint "posted at ${PMFEBuildGitCommitDate}\n"
 # 1) The default working directory we will reset to in the PMFE source folder; and
 # 2) The location of the pre-compiled PMFE binaries.
 SCRIPT_DIR_PATH=`echo "$(readlink -f ${0})" | sed -e 's/\(.*\)\/\(.*\)\.sh$/\1/'`
-DEFAULT_PMFE_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH)
+DEFAULT_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH)
 
 # Similarly, configure the working paths of the dynamic libraries we used to build the PMFE binaries.
 # These must be set to the local locations where we built the LibBoost and GMP libraries, or there will
 # be runtime errors:
-export PYTHONPATH=$PYTHONPATH:$(readlink -f $DEFAULT_PMFE_EXE_PATH)
+export PYTHONPATH=$PYTHONPATH:$(readlink -f $DEFAULT_EXE_PATH)
 export SAGE_PATH=$SAGE_PATH:$PYTHONPATH
-export DOT_SAGE=$(readlink -f $DEFAULT_PMFE_EXE_PATH/../SageInit)
+export DOT_SAGE=$(readlink -f $DEFAULT_EXE_PATH/../SageInit)
 
 # Check that at least one argument was passed to the script:
 if [ $# -eq 0 ]; then
