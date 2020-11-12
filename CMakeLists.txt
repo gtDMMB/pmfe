@@ -34,7 +34,7 @@ set(PMFE_PACKAGE_STRING "${PMFE_PACKAGE_NAME} v${PMFE_PACKAGE_VERSION}")
 ## Option to enable auto running of unit tests after recompiling:
 option(RUN_UNIT_TESTS "Enable running tests after build" OFF)
 
-## Configure pkg-config script for some dependency libraries:
+## Configure pkg-config script for some dependency libraries (LIBGMP and LIBGMPXX):
 include(FindPkgConfig)
 if(NOT PKG_CONFIG_FOUND)
      message(FATAL_ERROR "Unable to configure libGMP : pkg-config not found ..." )
@@ -55,25 +55,27 @@ string(STRIP "${PkgConfigLocalPCFilesPath}" PkgConfigLocalPCFilesPath)
 
 set(ENV{PKG_CONFIG_PATH} "${PkgConfigLocalPCFilesPath}")
 execute_process(
-     COMMAND bash -c "pkg-config gmp --libs --static"
-     OUTPUT_VARIABLE PC_GMP_LIBRARIES
-)
-string(STRIP "${PC_GMP_LIBRARIES}" PC_GMP_LIBRARIES)
-execute_process(
      COMMAND bash -c "pkg-config gmp --cflags"
      OUTPUT_VARIABLE PC_GMP_INCLUDE_DIRS
 )
 string(STRIP "${PC_GMP_INCLUDE_DIRS}" PC_GMP_INCLUDE_DIRS)
 execute_process(
-     COMMAND bash -c "pkg-config gmpxx --libs --static"
-     OUTPUT_VARIABLE PC_GMPXX_LIBRARIES
+     COMMAND bash -c "pkg-config gmp --libs --static"
+     OUTPUT_VARIABLE PC_GMP_LIBRARIES
 )
-string(STRIP "${PC_GMPXX_LIBRARIES}" PC_GMPXX_LIBRARIES)
+string(STRIP "${PC_GMP_LIBRARIES}" PC_GMP_LIBRARIES)
+
 execute_process(
      COMMAND bash -c "pkg-config gmpxx --cflags"
      OUTPUT_VARIABLE PC_GMPXX_INCLUDE_DIRS
 )
 string(STRIP "${PC_GMPXX_INCLUDE_DIRS}" PC_GMPXX_INCLUDE_DIRS)
+execute_process(
+     COMMAND bash -c "pkg-config gmpxx --libs --static"
+     OUTPUT_VARIABLE PC_GMPXX_LIBRARIES
+)
+string(STRIP "${PC_GMPXX_LIBRARIES}" PC_GMPXX_LIBRARIES)
+set(PC_GMPXX_LIBRARIES "-Wl,-rpath=${PkgConfigLocalPCFilesPath}/lib ${PC_GMPXX_LIBRARIES}")
 
 ## Configure paths on requisite build time libraries (Boost):
 set(Boost_USE_STATIC_LIBS ON)
@@ -85,11 +87,24 @@ set(Boost_DEBUG FALSE)
 set(Boost_NO_BOOST_CMAKE TRUE)
 set(Boost_NO_SYSTEM_PATHS TRUE)
 if(NOT DEFINED BOOST_ROOT)
-     set(BoostFileSystemRootPath "../BoostLocalInstall")
-     set(BOOST_ROOT ${PROJECT_SOURCE_DIR}/${BoostFileSystemRootPath})
+     if(APPLE)
+          execute_process(
+               COMMAND bash "-c" "echo $(greadlink -f ${PROJECT_SOURCE_DIR}/../BoostLocalInstall)"
+               OUTPUT_VARIABLE BoostFileSystemRootPath
+          )
+     elseif(UNIX AND NOT APPLE)
+          execute_process(
+               COMMAND bash "-c" "echo $(readlink -f ${PROJECT_SOURCE_DIR}/../BoostLocalInstall)"
+               OUTPUT_VARIABLE BoostFileSystemRootPath
+          )
+     endif()
+     string(STRIP ${BoostFileSystemRootPath} BoostFileSystemRootPath)
+     set(BOOST_ROOT ${BoostFileSystemRootPath})
+     message(STATUS " >> Setting BOOST_ROOT: ${BOOST_ROOT}")
 endif()
 set(Boost_INCLUDE_DIR ${BOOST_ROOT}/include)
 set(Boost_LIBRARY_DIR ${BOOST_ROOT}/lib)
+
 #find_package(
 #     Boost ${BOOST_MIN_VERSION}
 #     COMPONENTS filesystem program_options system log log_setup thread atomic regex chrono
@@ -126,7 +141,6 @@ foreach(fsEntry ${CGALBaseFilesList})
           list(APPEND CGALIncludeFilesList "${fsEntry}/include")
      endif()
 endforeach()
-# AND NOT EXISTS ${fsEntry}/include/CGAL/Regular_complex_d.h
 
 ## Build the binaries for the PMFE project:
 
@@ -143,12 +157,9 @@ file(GLOB ALL_TARGET_SOURCES src/*.cc)
 include_directories(${CGALIncludeFilesList} "${Boost_INCLUDE_DIR}"
                     "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/iB4e"
 )
-link_libraries("${Boost_LIBRARY_DIR}/libboost_program_options.a" "${Boost_LIBRARY_DIR}/libboost_system.a"
-                "${Boost_LIBRARY_DIR}/libboost_log.a"
-                "${Boost_LIBRARY_DIR}/libboost_thread.a" "${Boost_LIBRARY_DIR}/libboost_atomic.a"
-                "${Boost_LIBRARY_DIR}/libboost_regex.a" "${Boost_LIBRARY_DIR}/libboost_chrono.a")
+
 add_executable(
-    pmfe_findmfe_bin ${ALL_TARGET_SOURCES} src/bin-findmfe.cc
+    pmfe_findmfe_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-findmfe.cc
 )
 add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
 set_target_properties(
@@ -158,7 +169,7 @@ set_target_properties(
 )
 
 add_executable(
-    pmfe_scorer_bin ${ALL_TARGET_SOURCES} src/bin-scorer.cc
+    pmfe_scorer_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-scorer.cc
 )
 add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
 set_target_properties(
@@ -168,7 +179,7 @@ set_target_properties(
 )
 
 add_executable(
-    pmfe_parametrizer_bin ${ALL_TARGET_SOURCES} src/bin-parametrizer.cc
+    pmfe_parametrizer_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-parametrizer.cc
 )
 add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
 set_target_properties(
@@ -178,7 +189,7 @@ set_target_properties(
 )
 
 add_executable(
-    pmfe_subopt_bin ${ALL_TARGET_SOURCES} src/bin-subopt.cc
+    pmfe_subopt_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-subopt.cc
 )
 add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
 set_target_properties(
@@ -188,7 +199,7 @@ set_target_properties(
 )
 
 add_executable(
-    pmfe_tests_bin ${ALL_TARGET_SOURCES} src/bin-tests.cc
+    pmfe_tests_bin ${ALL_TARGET_SOURCES} src/test-utils/test-pmfe.cc src/bin-utils/bin-tests.cc
 )
 add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
 set_target_properties(
@@ -231,9 +242,10 @@ elseif(UNIX AND NOT APPLE) # Primary target: Linux (typically RHEL)
     )
     set(CMAKE_EXE_LINKER_FLAGS
         "${RHEL_LINKER_APPENDS} -L/usr/lib -L/usr/local/lib \
-        ${PC_GMP_LIBRARIES} ${PC_GMPXX_LIBRARIES} ${CMAKE_EXE_LINKER_FLAGS} -L${Boost_LIBRARY_DIR} \
-        -static -lboost_filesystem -lboost_program_options -lboost_system \
-        -lboost_log -lboost_log_setup -lpthread -lm"
+        ${CMAKE_EXE_LINKER_FLAGS} -L${Boost_LIBRARY_DIR} -Wl,-rpath=${Boost_LIBRARY_DIR} \
+        -lboost_filesystem -lboost_program_options -lboost_system \
+        -lboost_log -lboost_log_setup -lpthread -lm \
+        ${PC_GMPXX_LIBRARIES} ${PC_GMP_LIBRARIES}"
     )
 endif()
 
@@ -264,9 +276,7 @@ execute_process (
 )
 execute_process (
          COMMAND bash -c
-                "touch wrapper-runner-script/PMFECommandRunner.sh &&
-                cp wrapper-runner-script/PMFECommandRunner.sh ${UserRunnerScriptPath} &&
-                touch wrapper-runner-script/PMFEDeveloperCommandRunner.sh &&
+                "cp wrapper-runner-script/PMFECommandRunner.sh ${UserRunnerScriptPath} &&
                 cp wrapper-runner-script/PMFEDeveloperCommandRunner.sh ${DevRunnerScriptPath} &&
                 cp wrapper-runner-script/init.sage ${SageInitScriptPath} &&
                 cp wrapper-runner-script/init.sage ${SageInitScriptNestedPath}"

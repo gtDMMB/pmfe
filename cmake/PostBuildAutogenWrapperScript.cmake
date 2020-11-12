@@ -4,8 +4,6 @@
 #### Author: Maxie D. Schmidt (github.com/maxieds)
 #### Created: 2020.11.02
 
-### TODO -> Need to update ... !!!
-
 ## Set the build time datestamp for reference:
 execute_process (
     COMMAND bash -c "date +'%F @ %T%p (%Y.%m.%d-%H%M%S)'"
@@ -40,6 +38,9 @@ execute_process (
 
 set(PMFEWrapperDevRunnerScriptStubPath "wrapper-runner-script/PMFEDeveloperCommandRunner.sh.in")
 set(PMFEWrapperDevRunnerScriptNewPath  "wrapper-runner-script/PMFEDeveloperCommandRunner.sh")
+execute_process (
+         COMMAND bash -c "cp ${PMFEWrapperDevRunnerScriptStubPath} ${PMFEWrapperDevRunnerScriptNewPath}"
+)
 execute_process (
          COMMAND bash -c "cp ${PMFEWrapperDevRunnerScriptStubPath} ${PMFEWrapperDevRunnerScriptNewPath}"
 )
