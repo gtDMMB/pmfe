@@ -29,7 +29,7 @@ PMFEWrapperScriptUsage() {
 # 1) The default working directory we will reset to in the PMFE source folder; and
 # 2) The location of the pre-compiled PMFE binaries.
 SCRIPT_DIR_PATH=`echo "$(readlink -f ${0})" | sed -e 's/\(.*\)\/\(.*\)\.sh$/\1/'`
-DEFAULT_PMFE_EXE_PATH=$(readlink -f ${PMFE_BUILD_ABS_BINARY_DIR_PATH})
+DEFAULT_PMFE_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH
 CMAKE_EXE_PATH=$(readlink -f $DEFAULT_PMFE_EXE_PATH/../cmake-*/bin/cmake)
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -f $SCRIPT_DIR_PATH/GTDMMBSoftware2020/BoostLocalInstall/lib)

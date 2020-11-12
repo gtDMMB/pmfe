@@ -28,9 +28,9 @@ PMFEWrapperScriptUsage() {
 }
 
 # Print status about the script and PMFE binary build information:
-PMFEBuildTimeStamp="${PMFE_BUILD_TIMESTAMP}"
-PMFEBuildGitCommitHash="${PMFE_BUILD_GIT_COMMIT_HASH}"
-PMFEBuildGitCommitDate="${PMFE_BUILD_GIT_COMMIT_DATE}"
+PMFEBuildTimeStamp="PMFE_BUILD_TIMESTAMP"
+PMFEBuildGitCommitHash="PMFE_BUILD_GIT_COMMIT_HASH"
+PMFEBuildGitCommitDate="PMFE_BUILD_GIT_COMMIT_DATE"
 PMFEWrapperScriptPrint "PMFE utilities compiled at ${PMFEBuildTimeStamp}"
 PMFEWrapperScriptPrint "from GitHub commit ${PMFEBuildGitCommitHash}"
 PMFEWrapperScriptPrint "posted at ${PMFEBuildGitCommitDate}\n"
@@ -39,7 +39,7 @@ PMFEWrapperScriptPrint "posted at ${PMFEBuildGitCommitDate}\n"
 # 1) The default working directory we will reset to in the PMFE source folder; and
 # 2) The location of the pre-compiled PMFE binaries.
 SCRIPT_DIR_PATH=`echo "$(readlink -f ${0})" | sed -e 's/\(.*\)\/\(.*\)\.sh$/\1/'`
-DEFAULT_PMFE_EXE_PATH=$(readlink -f ${PMFE_BUILD_ABS_BINARY_DIR_PATH})
+DEFAULT_PMFE_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH)
 
 # Similarly, configure the working paths of the dynamic libraries we used to build the PMFE binaries.
 # These must be set to the local locations where we built the LibBoost and GMP libraries, or there will
