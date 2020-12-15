@@ -160,51 +160,51 @@ include_directories(${CGALIncludeFilesList} "${Boost_INCLUDE_DIR}"
 )
 
 add_executable(
-    pmfe_findmfe_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-findmfe.cc
+    pmfe-findmfe ${ALL_TARGET_SOURCES} src/bin-utils/bin-findmfe.cc
 )
-add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
+add_dependencies(pmfe-findmfe BuildConfigHeader)
 set_target_properties(
-     pmfe_findmfe_bin PROPERTIES
+     pmfe-findmfe PROPERTIES
      OUTPUT_NAME "pmfe-findmfe"
      COMPILE_FLAGS "${CMAKE_CXX_FLAGS}"
 )
 
 add_executable(
-    pmfe_scorer_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-scorer.cc
+    pmfe-scorer ${ALL_TARGET_SOURCES} src/bin-utils/bin-scorer.cc
 )
-add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
+add_dependencies(pmfe-scorer BuildConfigHeader)
 set_target_properties(
-     pmfe_scorer_bin PROPERTIES
+     pmfe-scorer PROPERTIES
      OUTPUT_NAME "pmfe-scorer"
      COMPILE_FLAGS "${CMAKE_CXX_FLAGS}"
 )
 
 add_executable(
-    pmfe_parametrizer_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-parametrizer.cc
+    pmfe-parametrizer ${ALL_TARGET_SOURCES} src/bin-utils/bin-parametrizer.cc
 )
-add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
+add_dependencies(pmfe-parametrizer BuildConfigHeader)
 set_target_properties(
-     pmfe_parametrizer_bin PROPERTIES
+     pmfe-parametrizer PROPERTIES
      OUTPUT_NAME "pmfe-parametrizer"
      COMPILE_FLAGS "${CMAKE_CXX_FLAGS}"
 )
 
 add_executable(
-    pmfe_subopt_bin ${ALL_TARGET_SOURCES} src/bin-utils/bin-subopt.cc
+    pmfe-subopt ${ALL_TARGET_SOURCES} src/bin-utils/bin-subopt.cc
 )
-add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
+add_dependencies(pmfe-subopt BuildConfigHeader)
 set_target_properties(
-     pmfe_subopt_bin PROPERTIES
+     pmfe-subopt PROPERTIES
      OUTPUT_NAME "pmfe-subopt"
      COMPILE_FLAGS "${CMAKE_CXX_FLAGS}"
 )
 
 add_executable(
-    pmfe_tests_bin ${ALL_TARGET_SOURCES} src/test-utils/test-pmfe.cc src/bin-utils/bin-tests.cc
+    pmfe-tests ${ALL_TARGET_SOURCES} src/test-utils/test-pmfe.cc src/bin-utils/bin-tests.cc
 )
-add_dependencies(pmfe_findmfe_bin BuildConfigHeader)
+add_dependencies(pmfe-tests BuildConfigHeader)
 set_target_properties(
-     pmfe_subopt_bin PROPERTIES
+     pmfe-tests PROPERTIES
      OUTPUT_NAME "pmfe-tests"
      COMPILE_FLAGS "${CMAKE_CXX_FLAGS}"
 )
@@ -254,7 +254,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS}")
 
 install(
-     TARGETS pmfe_findmfe_bin pmfe_scorer_bin pmfe_parametrizer_bin pmfe_subopt_bin pmfe_tests_bin
+     TARGETS pmfe-findmfe pmfe-scorer pmfe-parametrizer pmfe-subopt pmfe-tests
      DESTINATION ${EXECUTABLE_OUTPUT_PATH}
 )
 
