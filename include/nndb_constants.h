@@ -22,6 +22,7 @@
 #ifndef _NNDB_CONSTANTS_H
 #define _NNDB_CONSTANTS_H
 
+#include "pmfe_build_config.h"
 #include "pmfe_types.h"
 #include "rational.h"
 
@@ -82,7 +83,7 @@ namespace pmfe {
 
     class Turner99: public NNDBConstants {
     public:
-        Turner99(const ParameterVector& params = ParameterVector(), const fs::path& param_dir = "Turner99");
+        Turner99(const ParameterVector& params = ParameterVector(), const fs::path& param_dir = PMFEBuild::TURNER99_DATA_DIR);
 
     protected:
         void initMiscValues(const fs::path& param_dir);

@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#### PMFECommandRunner.sh.in : Wrapper to make it easy to setup the shared library
+####                           deps to run the PMFE executables and/or call the
+####                           PMFE python libraries from within sage-math.
+#### Author:   Maxie D. Schmidt
+#### Created:  For math-mulberry on 2020.09.10
+#### Modified: 2020.10.05 -- Changes to support environment config and print wrapper script status to stderr
+####           2020.11.02 -- Created the stub file with definitions to be filled in during the CMake
+####                         build process
+
+# Function used to print status messages using ANSI colored terminal output:
+PMFEWrapperScriptPrint() {
+        strMsg="$1"
+        PMFEWrapperScriptHdr="\033[0m \033[0;35m[PMFE-WRAPPER-SCRIPT]\033[0m"
+        echo -e "${PMFEWrapperScriptHdr} ${strMsg}" 1>&2
+}
+
+# Function to print environment variable names using ANSI colored terminal output:
+GetVarNameString() {
+        echo -ne "\033[0;33m\$${1}\033[0m"
+}
+
+# Function to print the full usage of the script on error:
+PMFEWrapperScriptUsage() {
+        PMFEWrapperScriptPrint "SCRIPT USAGE: $1 <pmfe-sage|pmfe-findmfe|pmfe-parametrizer|pmfe-scorer|pmfe-subopt> [OPT-ARGS ...]\n"
+        exit -1
+}
+
+# Print status about the script and PMFE binary build information:
+PMFEBuildTimeStamp="PMFE_BUILD_TIMESTAMP"
+PMFEBuildGitCommitHash="PMFE_BUILD_GIT_COMMIT_HASH"
+PMFEBuildGitCommitDate="PMFE_BUILD_GIT_COMMIT_DATE"
+PMFEWrapperScriptPrint "PMFE utilities compiled at ${PMFEBuildTimeStamp}"
+PMFEWrapperScriptPrint "from GitHub commit ${PMFEBuildGitCommitHash}"
+PMFEWrapperScriptPrint "posted at ${PMFEBuildGitCommitDate}\n"
+
+# Set some defaults:
+# 1) The default working directory we will reset to in the PMFE source folder; and
+# 2) The location of the pre-compiled PMFE binaries.
+SCRIPT_DIR_PATH=`echo "$(readlink -f ${0})" | sed -e 's/\(.*\)\/\(.*\)\.sh$/\1/'`
+DEFAULT_EXE_PATH=$(readlink -f PMFE_BUILD_ABS_BINARY_DIR_PATH)
+
+# Similarly, configure the working paths of the dynamic libraries we used to build the PMFE binaries.
+# These must be set to the local locations where we built the LibBoost and GMP libraries, or there will
+# be runtime errors:
+export PYTHONPATH=$PYTHONPATH:$(readlink -f $DEFAULT_EXE_PATH)
+export SAGE_PATH=$SAGE_PATH:$PYTHONPATH
+export DOT_SAGE=$(readlink -f $DEFAULT_EXE_PATH/../SageInit)
+
+# Check that at least one argument was passed to the script:
+if [ $# -eq 0 ]; then
+        PMFEWrapperScriptPrint "ERROR: Need to pass the argument of the PMFE utility binary name you wish to run!\n"
+        PMFEWrapperScriptUsage $0
+fi
+
+# Run the specified binary and/or compute the specified action that the user passed as the
+# first parameter to the script. Note:
+# 1) "pmfe-tests" needs to be run with the current working directory set to the local PMFE source folder;
+# 2) "pmfe-sage" sets up some special paths within Sage using the files in `DOT_SAGE` so the
+#    PMFE Python library is found without any configuration by the user;
+pmfeCmd=$1
+pmfeCmdArgs="${@:2}"
+validBinaryArg=0
+case "${pmfeCmd}" in
+        "pmfe-findmfe")      $DEFAULT_EXE_PATH/bin/$pmfeCmd $pmfeCmdArgs        ; validBinaryArg=1 ;;
+        "pmfe-parametrizer") $DEFAULT_EXE_PATH/bin/$pmfeCmd $pmfeCmdArgs        ; validBinaryArg=1 ;;
+        "pmfe-scorer")       $DEFAULT_EXE_PATH/bin/$pmfeCmd $pmfeCmdArgs        ; validBinaryArg=1 ;;
+        "pmfe-subopt")       $DEFAULT_EXE_PATH/bin/$pmfeCmd $pmfeCmdArgs        ; validBinaryArg=1 ;;
+        "pmfe-tests")        cd $DEFAULT_PMFE_EXE_PATH ;
+                             $DEFAULT_EXE_PATH/bin/$pmfeCmd $pmfeCmdArgs        ; validBinaryArg=1 ;;
+        "pmfe-sage")         PYTHONPATH=$PYTHONPATH DOT_SAGE=$DOT_SAGE sage     ; validBinaryArg=1 ;;
+esac
+
+# Exit printing usage on erroneous or invalid input:
+if [[ "$validBinaryArg" != "1" ]]; then
+        PMFEWrapperScriptPrint "ERROR: Invalid PMFE utility binary argument type specified!\n"
+        PMFEWrapperScriptUsage $0
+fi
+
+exit 0

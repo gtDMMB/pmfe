@@ -3,9 +3,9 @@
 #ifndef BBPOLY_H
 #define BBPOLY_H
 
+#include "Regular_complex_d.h"
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/Convex_hull_d.h>
-#include <CGAL/Regular_complex_d.h>
 
 #include <CGAL/Kernel_d/Point_d.h>
 #include <CGAL/Kernel_d/Vector_d.h>

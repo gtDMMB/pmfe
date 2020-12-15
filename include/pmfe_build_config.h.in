@@ -1,0 +1,32 @@
+/* pmfe_build_config.h.in : Source file to generate an on-the-fly build configuration header file at compile time.
+ * Author: Maxie D. Schmidt (github.com/maxieds)
+ * Created: 2020.11.02
+ */
+
+#ifndef PMFE_LOCAL_BUILD_CONFIG_AUTOGEN_H
+#define PMFE_LOCAL_BUILD_CONFIG_AUTOGEN_H
+
+#include <string>
+
+namespace PMFEBuild {
+
+     /* Define parameters that describe the CMake configuration and build environment: */
+     const std::string BUILD_CMAKE_VERSION             = "__CMAKE_VERSION";
+     const std::string BUILD_SYSTEM_VERSION            = "__SYSTEM_VERSION";
+
+     /* PMFE source and build script version information: */
+     const std::string BUILD_PMFE_GIT_COMMIT_HASH      = "__PMFE_BUILD_GIT_COMMIT_HASH";
+     const std::string BUILD_PMFE_GIT_COMMIT_DATE      = "__PMFE_BUILD_GIT_COMMIT_DATE";
+     const std::string BUILD_PMFE_BUILD_DATE           = "__PMFE_BUILD_DATESTAMP";
+
+     /* Set the absolute build path of the working PMFE source directory 
+      * so that the testing sequence and Turner99 thermodynamic data files 
+      * can be found at runtime without needing to change the working directories: 
+      */
+     const std::string PMFE_BUILD_ABS_BASE_PATH  = "__PMFE_BUILD_ABS_WORKING_DIR";
+     const std::string TURNER99_DATA_DIR         = PMFE_BUILD_ABS_BASE_PATH + "/Turner99";
+     const std::string TESTING_SEQ_DATA_DIR      = PMFE_BUILD_ABS_BASE_PATH + "/test/seq";
+
+} // namespace PMFEBuild
+
+#endif
